@@ -1,37 +1,43 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package modelo.swing;
 
+import com.curso.swing.Ventana;
+import java.awt.BorderLayout;
 import java.util.Date;
 import java.util.List;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 import modelo.entidades.Oferta;
 
-/**
- *
- * @author Grupo 1 Java
- */
 public class EditarFrame {
 
     public static JFrame editarFrame() {
 
         JLabel title = new JLabel("EDITE AQUI SUS OFERTAS");
         title.setSize(20, 20);
-        
+
         //OfertaTableModel datosOferta = new OfertaTableModel(ofertas);
-        
         JTable ofertas = new JTable();
         //ofertas.setModel(datosOferta);
+
+        JButton editarBtn = new JButton("EDITAR");
+
+        JPanel mainPanel = new JPanel(new BorderLayout(5, 5));
+        mainPanel.add(title, BorderLayout.NORTH);
+        mainPanel.add(new JScrollPane(ofertas), BorderLayout.CENTER);
+        mainPanel.add(editarBtn, BorderLayout.SOUTH);
         
+        JFrame editarFrame = Ventana.crear("EDITAR FRAME", 250, 300, false);
+        editarFrame.setLocationRelativeTo(null);
+        editarFrame.setContentPane(mainPanel);
+        editarFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        editarFrame.setVisible(true);
         
-        
-        return null;
+        return editarFrame;
     }
 }
 
