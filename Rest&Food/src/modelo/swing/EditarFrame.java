@@ -10,6 +10,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.table.AbstractTableModel;
 import modelo.entidades.Oferta;
 
@@ -17,7 +18,7 @@ public class EditarFrame {
 
     public static JFrame editarFrame() {
 
-        JLabel title = new JLabel("EDITE AQUI SUS OFERTAS");
+        JLabel title = new JLabel("EDITE AQUI SUS OFERTAS", SwingConstants.CENTER);
         title.setSize(20, 20);
 
         //OfertaTableModel datosOferta = new OfertaTableModel(ofertas);

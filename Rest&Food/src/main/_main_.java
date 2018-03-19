@@ -10,6 +10,7 @@ import javax.swing.SwingUtilities;
 import modelo.swing.AñadirFrame;
 import modelo.swing.EditarFrame;
 import modelo.swing.EliminarFrame;
+import modelo.swing.NuevoRestaurante;
 
 public class _main_ {
 
@@ -52,7 +53,7 @@ public class _main_ {
         });
         
         newRes.addActionListener(e -> {
-            
+            NuevoRestaurante.añadirRestaurante();
         });
     }
     
