@@ -4,8 +4,6 @@ import com.curso.swing.Ventana;
 import datechooser.beans.DateChooserCombo;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
-import java.util.Calendar;
-import java.util.Date;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -13,6 +11,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import modelo.dao.SwingController;
+import modelo.dao.SwingControllerImpl;
+import modelo.entidades.Oferta;
+import modelo.excepctions.OfertaException;
 
 public class AñadirFrame {
     
@@ -61,7 +63,19 @@ public class AñadirFrame {
         anadirFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         
         aceptarBtn.addActionListener(e -> {
-            
+            try {
+                SwingController controller = new SwingControllerImpl();
+                
+                Oferta of = new Oferta(titleTxt.getText(), descTxt.getText(), 
+                        fechaIni.getSelectedDate().getTime(), 
+                        fechaFin.getSelectedDate().getTime(), tipoDesTxt.getText());
+                
+                controller.insertarOferta(of);
+                
+                anadirFrame.setVisible(false);
+            } catch(OfertaException ex){
+                System.out.println(ex.getMessage());
+            }
         });
         
         return anadirFrame;

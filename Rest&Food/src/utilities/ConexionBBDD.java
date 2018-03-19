@@ -2,13 +2,8 @@ package utilities;
 
 public interface ConexionBBDD {
 
-    String URL = "jdbc:sql11.freemysqlhosting.net";
+    String URL = "jdbc:mysql://sql11.freemysqlhosting.net:3306/sql11227552";
     String USER = "sql11227552";
     String PASSWORD = "6kLEyuJmEt";
 
-    /*
-        Método para mostrar en pantalla los datos del ResultSet con registros
-        devueltos al ejecutar la vista animales.info_animales
-     */
-    
 }

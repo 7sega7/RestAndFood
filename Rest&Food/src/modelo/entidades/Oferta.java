@@ -9,17 +9,15 @@ public class Oferta {
     private final Date fechaInicio;
     private final Date fechaFinal;
     private final String tipoOferta;
-    private final String empresa;
 
     public Oferta(String titulo, String descripcion, Date fechaInicio,
-            Date fechaFinal, String tipoOferta, String empresa) {
+            Date fechaFinal, String tipoOferta) {
         
         this.titulo = titulo;
         this.descripcion = descripcion;
         this.fechaInicio = fechaInicio;
         this.fechaFinal = fechaFinal;
         this.tipoOferta = tipoOferta;
-        this.empresa = empresa;
     }
 
     public String getTitulo() {
@@ -40,10 +38,6 @@ public class Oferta {
 
     public String getTipoOferta() {
         return tipoOferta;
-    }
-
-    public String getEmpresa() {
-        return empresa;
     }
 
 }

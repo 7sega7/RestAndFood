@@ -71,8 +71,6 @@ class OfertaTableModel extends AbstractTableModel {
                 return filas.get(fila).getFechaInicio();
             case 3:
                 return filas.get(fila).getFechaFinal();
-            case 4:
-                return filas.get(fila).getEmpresa();
             default:
                 return null;
         }

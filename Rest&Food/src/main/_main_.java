@@ -16,6 +16,20 @@ public class _main_ {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new _main_().startup());
+        
+        try {
+            /*
+            Paso 1.- Instanciar un objeto de la clase de los Drivers de conexion
+            a la BBDD
+             */
+            Class.forName("com.mysql.jdbc.Driver");
+
+        } catch (ClassNotFoundException ex) {
+            System.out.println("No se pueden cargar los drivers de BBDD");
+            System.out.println("La aplicación ha finalizado");
+
+            System.exit(0);
+        }
     }
     
     private void startup() {
