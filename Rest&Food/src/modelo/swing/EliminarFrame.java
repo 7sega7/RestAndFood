@@ -12,9 +12,13 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import modelo.dao.SwingController;
+import modelo.dao.SwingControllerImpl;
 import modelo.entidades.Oferta;
+import modelo.excepctions.OfertaException;
 
 
 
@@ -45,14 +49,41 @@ public class EliminarFrame {
         
         DefaultListModel<Oferta> modeloLista = new DefaultListModel<>();
         JList<Oferta> lista = new JList<>(modeloLista);
+        // Añadir los elementos a la lista
         // for (Oferta of : lista) {
         // modeloLista.addElement(of);
         
         // Creacion del boton
         JButton buttonDel = new JButton("Eliminar");
         
-        // Evento que confirma la eliminacion seleccionada. 
-        // buttonDel.addActionListener(al);
+        /*
+        
+        // Evento que confirma la eliminacion seleccionada.
+        
+        buttonDel.addActionListener(e -> {
+        
+            try{
+            
+                SwingController controller = new SwingControllerImpl();
+                
+                
+            
+            
+        } catch (OfertaException ex) {
+            
+            System.out.println(ex.getMessage());
+        } 
+        
+        
+        
+        } );
+        
+        */
+        
+        // Mensaje de advertencia de si quieres eliminar los datos seleccionado.
+        JOptionPane.showConfirmDialog(null, "¿Realmente Desea Eliminar?", "Confirmar eliminacion", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+        
+        
         
         
         // Añadir elementos al panel secundario
@@ -68,6 +99,7 @@ public class EliminarFrame {
         el.setContentPane(panelp);
         el.setVisible(true);
         el.setLocationRelativeTo(null);
+        el.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
          
         return el;
     }

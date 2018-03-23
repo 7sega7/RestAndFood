@@ -79,13 +79,53 @@ public class SwingControllerImpl implements SwingController {
 
     @Override
     public void eliminarOferta(String title) throws OfertaException {
-
+        
+        try {
+            
+          Connection conexion = getConnection();
+          
+          Statement st = conexion.createStatement();
+          
+          st.executeUpdate("DELETE FROM sql11227552.ofertas "
+                  + "WHERE title =  " + title);
+          
+          conexion.close();
+          
+            
+            
+        } catch(SQLException ex) {
+            
+            throw new OfertaException("Error al eliminar.  Razon: " + ex.getMessage());
+        }
+        
+        
+        
     }
 
     @Override
     public List<Oferta> updateOferta(Oferta of) throws OfertaException {
         
+        
+        try {
+            
+            Connection conexion = getConnection();
+            
+            Statement st = conexion.createStatement();
+            
+            st.executeUpdate("UPDATE sql11227552.ofertas SET title = " + of.getTitulo()
+                    + "description = " + of.getDescripcion() 
+                    + "start_date = " + of.getFechaInicio() 
+                    + "end_date = " + of.getFechaFinal() 
+                    + "discount_type = " + of.getTipoOferta());
+        
+        
+        
         return null;
+        } catch (SQLException ex) {
+            
+            throw new OfertaException("Error al actualizar.  Razon: " + ex.getMessage());
+            
+        }
     }
 
 }
