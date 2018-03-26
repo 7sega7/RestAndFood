@@ -1,16 +1,18 @@
 package main;
 
 import com.curso.swing.Ventana;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import modelo.swing.AñadirFrame;
-import modelo.swing.EditarFrame;
-import modelo.swing.EliminarFrame;
-import modelo.swing.NuevoRestaurante;
+import modelo.swing.MainFrame;
 
 public class _main_ {
 
@@ -34,41 +36,38 @@ public class _main_ {
     
     private void startup() {
         
-        JButton añadir = new JButton("AÑADIR");
-        JButton eliminar = new JButton("ELIMINAR");
-        JButton editar = new JButton("EDITAR");
-        JButton newRes = new JButton("NUEVO RESTAURANTE");
+        JLabel emailEmpresaLbl = new JLabel("Introduzca su correo electronico: ");
+        JLabel passEmpresaLbl = new JLabel("Introduzca su contraseña: ");
         
-        JPanel panelBoton = new JPanel(new GridLayout(2, 0, 5, 5));
-        panelBoton.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        JTextField emailEmpresaTxt = new JTextField();
+        JTextField passEmpresaTxt = new JTextField();
         
-        panelBoton.add(añadir);
-        panelBoton.add(eliminar);
-        panelBoton.add(editar);
-        panelBoton.add(newRes);
+        JPanel flowPanel = new JPanel(new GridLayout(2, 0));
+        flowPanel.add(emailEmpresaLbl);
+        flowPanel.add(emailEmpresaTxt);
+        emailEmpresaTxt.setToolTipText("Correo Electronico");
+        flowPanel.add(passEmpresaLbl);
+        flowPanel.add(passEmpresaTxt);
+        passEmpresaTxt.setToolTipText("Contraseña");
         
-        JFrame mainFrame = Ventana.crear("REST & FOOD", 400, 300, true);
+        JButton accederBtn = new JButton("ACCEDER");
         
-        mainFrame.setContentPane(panelBoton);
-        mainFrame.setVisible(true);
-        mainFrame.setLocationRelativeTo(null);
-        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        JPanel mainPanel = new JPanel(new BorderLayout(5, 5));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
+        mainPanel.add(flowPanel, BorderLayout.NORTH);
+        mainPanel.add(accederBtn, BorderLayout.SOUTH);
         
-        añadir.addActionListener(e -> {
-            AñadirFrame.añadir();
+        JFrame empresaFrame = Ventana.crear("REST&FOOD", 450, 125, false);
+        empresaFrame.setContentPane(mainPanel);
+        empresaFrame.setVisible(true);
+        empresaFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        empresaFrame.setLocationRelativeTo(null);
+        
+        accederBtn.addActionListener(e -> {
+            MainFrame.mainFrame();
+            empresaFrame.setVisible(false);
         });
         
-        eliminar.addActionListener(e -> {
-            EliminarFrame.eliminarFrame();
-        });
-        
-        editar.addActionListener(e -> {
-            EditarFrame.editarFrame();
-        });
-        
-        newRes.addActionListener(e -> {
-            NuevoRestaurante.añadirRestaurante();
-        });
     }
     
 }
