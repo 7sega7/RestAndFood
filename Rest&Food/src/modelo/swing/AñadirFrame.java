@@ -1,9 +1,14 @@
 package modelo.swing;
 
 import com.curso.swing.Ventana;
+import com.toedter.calendar.JCalendar;
+import com.toedter.calendar.JDateChooser;
 import datechooser.beans.DateChooserCombo;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -13,8 +18,6 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import modelo.dao.SwingController;
 import modelo.dao.SwingControllerImpl;
-import modelo.entidades.Oferta;
-import modelo.excepctions.OfertaException;
 
 public class AñadirFrame {
     
@@ -30,11 +33,11 @@ public class AñadirFrame {
         
         JTextField titleTxt = new JTextField();
         JTextField descTxt = new JTextField();
-        DateChooserCombo fechaIni = new DateChooserCombo();
+        JDateChooser fechaIni = new JDateChooser();
         DateChooserCombo fechaFin = new DateChooserCombo();
         fechaFin.setCurrent(null);
-        fechaIni.setMaxDate(fechaFin.getSelectedDate());
-        fechaFin.setMinDate(fechaIni.getSelectedDate());
+        //fechaIni.setMaxDate(fechaFin.getSelectedDate());
+        //fechaFin.setMinDate(fechaIni.getSelectedDate());
         JTextField tipoDesTxt = new JTextField();
         JButton aceptarBtn = new JButton("AÑADIR OFERTA");
         
@@ -63,19 +66,25 @@ public class AñadirFrame {
         anadirFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         
         aceptarBtn.addActionListener(e -> {
-            try {
+            //try {
                 SwingController controller = new SwingControllerImpl();
                 
-                Oferta of = new Oferta(titleTxt.getText(), descTxt.getText(), 
-                        fechaIni.getSelectedDate().getTime(), 
-                        fechaFin.getSelectedDate().getTime(), tipoDesTxt.getText());
                 
-                controller.insertarOferta(of);
+                System.out.println(fechaIni.getCalendar().get(Calendar.YEAR));
+                System.out.println(fechaIni.getCalendar().get(Calendar.MONTH));
+                System.out.println(fechaIni.getCalendar().get(Calendar.DAY_OF_MONTH));
                 
-                anadirFrame.setVisible(false);
-            } catch(OfertaException ex){
-                System.out.println(ex.getMessage());
-            }
+                
+                //Oferta of = new Oferta(titleTxt.getText(), descTxt.getText(), 
+                        //fechaIni.getSelectedDate().getTime(), 
+                        //fechaFin.getSelectedDate().getTime(), tipoDesTxt.getText());
+                
+                //controller.insertarOferta(of);
+                
+                //anadirFrame.setVisible(false);
+            //} catch(OfertaException ex){
+                //System.out.println(ex.getMessage());
+            //}
         });
         
         return anadirFrame;
