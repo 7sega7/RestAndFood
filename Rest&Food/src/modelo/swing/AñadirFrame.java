@@ -1,13 +1,9 @@
 package modelo.swing;
 
 import com.curso.swing.Ventana;
-import com.toedter.calendar.JCalendar;
 import com.toedter.calendar.JDateChooser;
-import datechooser.beans.DateChooserCombo;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -34,8 +30,8 @@ public class AñadirFrame {
         JTextField titleTxt = new JTextField();
         JTextField descTxt = new JTextField();
         JDateChooser fechaIni = new JDateChooser();
-        DateChooserCombo fechaFin = new DateChooserCombo();
-        fechaFin.setCurrent(null);
+        JDateChooser fechaFin = new JDateChooser();
+        //fechaFin.setCurrent(null);
         //fechaIni.setMaxDate(fechaFin.getSelectedDate());
         //fechaFin.setMinDate(fechaIni.getSelectedDate());
         JTextField tipoDesTxt = new JTextField();
