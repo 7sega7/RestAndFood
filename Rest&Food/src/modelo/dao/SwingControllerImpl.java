@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import modelo.entidades.Oferta;
 import modelo.excepctions.OfertaException;
@@ -28,21 +27,21 @@ public class SwingControllerImpl implements SwingController {
 
             Statement st = conexion.createStatement();
 
-            ResultSet rs = st.executeQuery("SELECT title, description, start_date"
-                    + " end_date, discount_type, empresa FROM sql11227552.ofertas");
+            ResultSet rs = st.executeQuery("SELECT titulo, descripcion, fecha_inicio"
+                    + " fecha_final, tipo_oferta FROM restandfood.oferta");
 
             List<Oferta> listaOfertas = new ArrayList<>();
 
             while (rs.next()) {
-                String title = rs.getString("title");
-                String description = rs.getString("description");
-                String start_date = rs.getString("start_date");
-                String end_date = rs.getString("end_date");
-                String discount_type = rs.getString("discount_type");
-                
-                Oferta of = new Oferta(title, description, start_date, 
-                        end_date, discount_type);
-                
+                String titulo = rs.getString("titulo");
+                String descripcion = rs.getString("descripcion");
+                String fecha_inicio = rs.getString("fecha_inicio");
+                String fecha_final = rs.getString("fecha_final");
+                String tipo_oferta = rs.getString("tipo_oferta");
+
+                Oferta of = new Oferta(titulo, descripcion, fecha_inicio,
+                        fecha_final, tipo_oferta);
+
                 listaOfertas.add(of);
             }
             conexion.close();
@@ -56,74 +55,72 @@ public class SwingControllerImpl implements SwingController {
 
     @Override
     public void insertarOferta(Oferta of) throws OfertaException {
-        
-        try{
+
+        try {
             Connection conexion = getConnection();
-        
+
             Statement st = conexion.createStatement();
+            System.out.println(of.getTitulo() + of.getDescripcion() + of.getFechaInicio() + of.getFechaFinal() + of.getTipoOferta());
             
-            
-            st.executeUpdate("INSERT INTO sql11227552.ofertas(title, description, start_date"
-                    + " end_date, discount_type) "
-                    + "VALUES(" + of.getTitulo() + of.getDescripcion() + 
-                    of.getFechaInicio() + of.getFechaFinal() + of.getTipoOferta() +"')");
-        
+            st.executeUpdate("INSERT INTO restandfood.oferta(titulo, descripcion, fecha_inicio,"
+                    + " fecha_final, tipo_oferta) "
+                    + "VALUES ('" + of.getTitulo() + "', '" + of.getDescripcion() + "', " 
+                    + of.getFechaInicio() + ", "  + of.getFechaFinal() + ", '"  + of.getTipoOferta() + "')");
+
             conexion.close();
-        } catch (SQLException ex){
-            throw new OfertaException("Error al insertar:" + ex.getMessage());
-        }  
-        
+        } catch (SQLException ex) {
+            throw new OfertaException("Error al insertar:" + ex.getLocalizedMessage());
+        }
+
     }
 
     @Override
-    public void eliminarOferta(String title) throws OfertaException {
-        
+    public void eliminarOferta(String titulo) throws OfertaException {
+
         try {
-            
-          Connection conexion = getConnection();
-          
-          Statement st = conexion.createStatement();
-          
-          st.executeUpdate("DELETE FROM sql11227552.ofertas "
-                  + "WHERE title =  " + title);
-          
-          conexion.close();
-          
-            
-            
-        } catch(SQLException ex) {
-            
+
+            Connection conexion = getConnection();
+
+            Statement st = conexion.createStatement();
+
+            st.executeUpdate("DELETE FROM restandfood.oferta "
+                    + "WHERE titulo =  " + titulo);
+
+            conexion.close();
+
+        } catch (SQLException ex) {
+
             throw new OfertaException("Error al eliminar.  Razon: " + ex.getMessage());
         }
-        
-        
-        
+
     }
 
     @Override
     public List<Oferta> updateOferta(Oferta of) throws OfertaException {
-        
-        
+
         try {
-            
+
             Connection conexion = getConnection();
-            
+
             Statement st = conexion.createStatement();
-            
-            st.executeUpdate("UPDATE sql11227552.ofertas SET title = " + of.getTitulo()
-                    + "description = " + of.getDescripcion() 
-                    + "start_date = " + of.getFechaInicio() 
-                    + "end_date = " + of.getFechaFinal() 
-                    + "discount_type = " + of.getTipoOferta());
-        
-        
-        
-        return null;
+
+            st.executeUpdate("UPDATE restandfood.oferta SET titulo = " + of.getTitulo()
+                    + "descripcion = " + of.getDescripcion()
+                    + "fecha_inicio = " + of.getFechaInicio()
+                    + "fecha_final = " + of.getFechaFinal()
+                    + "tipo_oferta = " + of.getTipoOferta());
+
+            return null;
         } catch (SQLException ex) {
-            
+
             throw new OfertaException("Error al actualizar.  Razon: " + ex.getMessage());
-            
+
         }
+    }
+
+    @Override
+    public Integer loginEmpresa(String email, String contraseña) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

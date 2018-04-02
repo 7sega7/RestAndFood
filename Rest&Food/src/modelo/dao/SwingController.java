@@ -13,4 +13,6 @@ public interface SwingController {
     public abstract void eliminarOferta(String title) throws OfertaException;
 
     public abstract List<Oferta> updateOferta(Oferta of) throws OfertaException;
+    
+    public abstract Integer loginEmpresa(String email, String contraseña);
 }
