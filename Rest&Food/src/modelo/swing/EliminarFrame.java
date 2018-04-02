@@ -56,9 +56,47 @@ public class EliminarFrame {
         // Creacion del boton
         JButton buttonDel = new JButton("Eliminar");
         
+        
+        
+        // Mensaje de advertencia de si quieres eliminar los datos seleccionado.
+        
+        buttonDel.addActionListener(e -> { 
+        
+           
+                
+                SwingController controller = new SwingControllerImpl();
+                
+                if(JOptionPane.showConfirmDialog(null, "¿Estás seguro?", "WARNING",
+                JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                // yes option
+                
+                /*
+                buttonDel.addActionListener(e -> {
+                    
+                  SwingController controller = new SwingControllerImpl();
+                  
+                  
+                    
+                });
+                
+                */
+            
+                } else {
+                // no option
+                   
+                }
+         });
+        
+        
+        
+        
+        
         /*
         
         // Evento que confirma la eliminacion seleccionada.
+        
+        
+        
         
         buttonDel.addActionListener(e -> {
         
@@ -80,8 +118,8 @@ public class EliminarFrame {
         
         */
         
-        // Mensaje de advertencia de si quieres eliminar los datos seleccionado.
-        JOptionPane.showConfirmDialog(null, "¿Realmente Desea Eliminar?", "Confirmar eliminacion", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+        
+       
         
         
         
