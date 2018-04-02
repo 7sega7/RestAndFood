@@ -4,7 +4,8 @@ import com.curso.swing.Ventana;
 import com.toedter.calendar.JDateChooser;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
-import java.util.Calendar;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -31,9 +32,6 @@ public class AñadirFrame {
         JTextField descTxt = new JTextField();
         JDateChooser fechaIni = new JDateChooser();
         JDateChooser fechaFin = new JDateChooser();
-        //fechaFin.setCurrent(null);
-        //fechaIni.setMaxDate(fechaFin.getSelectedDate());
-        //fechaFin.setMinDate(fechaIni.getSelectedDate());
         JTextField tipoDesTxt = new JTextField();
         JButton aceptarBtn = new JButton("AÑADIR OFERTA");
         
@@ -64,12 +62,13 @@ public class AñadirFrame {
         aceptarBtn.addActionListener(e -> {
             //try {
                 SwingController controller = new SwingControllerImpl();
+
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                 
+                Date d = fechaIni.getDate();
                 
-                System.out.println(fechaIni.getCalendar().get(Calendar.YEAR));
-                System.out.println(fechaIni.getCalendar().get(Calendar.MONTH));
-                System.out.println(fechaIni.getCalendar().get(Calendar.DAY_OF_MONTH));
-                
+                String datef = dateFormat.format(d);
+                System.out.println(datef);
                 
                 //Oferta of = new Oferta(titleTxt.getText(), descTxt.getText(), 
                         //fechaIni.getSelectedDate().getTime(), 

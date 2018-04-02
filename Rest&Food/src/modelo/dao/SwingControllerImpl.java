@@ -36,8 +36,8 @@ public class SwingControllerImpl implements SwingController {
             while (rs.next()) {
                 String title = rs.getString("title");
                 String description = rs.getString("description");
-                Date start_date = rs.getDate("start_date");
-                Date end_date = rs.getDate("end_date");
+                String start_date = rs.getString("start_date");
+                String end_date = rs.getString("end_date");
                 String discount_type = rs.getString("discount_type");
                 
                 Oferta of = new Oferta(title, description, start_date, 
@@ -62,13 +62,11 @@ public class SwingControllerImpl implements SwingController {
         
             Statement st = conexion.createStatement();
             
-            Date fechaIni = new Date(of.getFechaInicio().getTime());
-            Date fechaFin = new Date(of.getFechaFinal().getTime());
             
             st.executeUpdate("INSERT INTO sql11227552.ofertas(title, description, start_date"
                     + " end_date, discount_type) "
                     + "VALUES(" + of.getTitulo() + of.getDescripcion() + 
-                    fechaIni + fechaFin + of.getTipoOferta() +"')");
+                    of.getFechaInicio() + of.getFechaFinal() + of.getTipoOferta() +"')");
         
             conexion.close();
         } catch (SQLException ex){

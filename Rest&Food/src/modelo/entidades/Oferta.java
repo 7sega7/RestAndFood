@@ -1,17 +1,15 @@
 package modelo.entidades;
 
-import java.util.Date;
-
 public class Oferta {
 
     private final String titulo;
     private final String descripcion;
-    private final Date fechaInicio;
-    private final Date fechaFinal;
+    private final String fechaInicio;
+    private final String fechaFinal;
     private final String tipoOferta;
 
-    public Oferta(String titulo, String descripcion, Date fechaInicio,
-            Date fechaFinal, String tipoOferta) {
+    public Oferta(String titulo, String descripcion, String fechaInicio,
+            String fechaFinal, String tipoOferta) {
         
         this.titulo = titulo;
         this.descripcion = descripcion;
@@ -28,11 +26,11 @@ public class Oferta {
         return descripcion;
     }
 
-    public Date getFechaInicio() {
+    public String getFechaInicio() {
         return fechaInicio;
     }
 
-    public Date getFechaFinal() {
+    public String getFechaFinal() {
         return fechaFinal;
     }
 
