@@ -51,10 +51,8 @@ public class AñadirFrame {
 
         JButton aceptarBtn = new JButton("CREAR NUEVA OFERTA");
 
-        List<Restaurante> restaurantesList = new ArrayList<>();
-
         try {
-            restaurantesList = controller.listRestaurante(id_empresa);
+            List<Restaurante> restaurantesList = controller.listRestaurante(id_empresa);
 
             for (Restaurante res : restaurantesList) {
                 modeloCombo.addElement(res);
