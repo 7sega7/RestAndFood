@@ -11,14 +11,17 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import modelo.dao.SwingController;
 
 /**
  *
  * @author 7sega7
  */
 public class MainFrame {
-
-    public static JFrame mainFrame(){
+    
+    
+    
+    public static JFrame mainFrame(Integer id_empresa, SwingController controller){
         
         JButton añadir = new JButton("AÑADIR");
         JButton eliminar = new JButton("ELIMINAR");
@@ -41,7 +44,7 @@ public class MainFrame {
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         añadir.addActionListener(e -> {
-            AñadirFrame.añadir();
+            AñadirFrame.añadir(id_empresa, controller);
         });
         
         eliminar.addActionListener(e -> {

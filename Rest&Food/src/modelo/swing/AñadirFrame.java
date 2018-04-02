@@ -5,22 +5,30 @@ import com.toedter.calendar.JDateChooser;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.BorderFactory;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import modelo.dao.SwingController;
-import modelo.dao.SwingControllerImpl;
 import modelo.entidades.Oferta;
+import modelo.entidades.Restaurante;
 import modelo.excepctions.OfertaException;
+import modelo.excepctions.RestauranteException;
 
 public class AñadirFrame {
 
-    public static JFrame añadir() {
+    public static JFrame añadir(Integer id_empresa, SwingController controller) {
 
         JLabel header = new JLabel("AÑADIR NUEVA OFERTA", SwingConstants.CENTER);
 
@@ -29,13 +37,31 @@ public class AñadirFrame {
         JLabel fechIniLbl = new JLabel("FECHA INICIO");
         JLabel fechFinLbl = new JLabel("FECHA CADUCIDAD");
         JLabel tipoDesLbl = new JLabel("TIPO DESCUENTO");
+        JLabel restaurantesLbl = new JLabel("ELIJA LOS RESTAURANTES");
 
         JTextField titleTxt = new JTextField();
         JTextField descTxt = new JTextField();
         JDateChooser fechaIni = new JDateChooser();
         JDateChooser fechaFin = new JDateChooser();
         JTextField tipoDesTxt = new JTextField();
-        JButton aceptarBtn = new JButton("AÑADIR OFERTA");
+        DefaultComboBoxModel<Restaurante> modeloCombo = new DefaultComboBoxModel<>();
+        JButton añadirResBtn = new JButton("AÑADIR OFERTA AL RESTAURANTE");
+        JComboBox restaurantesCbox = new JComboBox();
+        JList restList = new JList();
+
+        JButton aceptarBtn = new JButton("CREAR NUEVA OFERTA");
+
+        List<Restaurante> restaurantesList = new ArrayList<>();
+
+        try {
+            restaurantesList = controller.listRestaurante(id_empresa);
+
+            for (Restaurante res : restaurantesList) {
+                modeloCombo.addElement(res);
+            }
+        } catch (RestauranteException ex) {
+            System.out.println(ex.getLocalizedMessage());
+        }
 
         JPanel panelTxt = new JPanel(new GridLayout(5, 0, 5, 5));
         panelTxt.add(titleLbl);
@@ -63,7 +89,6 @@ public class AñadirFrame {
 
         aceptarBtn.addActionListener(e -> {
             try {
-                SwingController controller = new SwingControllerImpl();
 
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                 SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd");

@@ -2,13 +2,18 @@ package modelo.dao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import modelo.entidades.Oferta;
+import modelo.entidades.Restaurante;
 import modelo.excepctions.OfertaException;
+import modelo.excepctions.RestauranteException;
 import utilities.ConexionBBDD;
 
 public class SwingControllerImpl implements SwingController {
@@ -25,10 +30,10 @@ public class SwingControllerImpl implements SwingController {
 
             Connection conexion = getConnection();
 
-            Statement st = conexion.createStatement();
+            PreparedStatement ps = conexion.prepareStatement("SELECT titulo, descripcion, fecha_inicio"
+                    + " fecha_final, tipo_oferta FROM restandfood.oferta WHERE ");
 
-            ResultSet rs = st.executeQuery("SELECT titulo, descripcion, fecha_inicio"
-                    + " fecha_final, tipo_oferta FROM restandfood.oferta");
+            ResultSet rs = ps.executeQuery();
 
             List<Oferta> listaOfertas = new ArrayList<>();
 
@@ -59,14 +64,17 @@ public class SwingControllerImpl implements SwingController {
         try {
             Connection conexion = getConnection();
 
-            Statement st = conexion.createStatement();
-            System.out.println(of.getTitulo() + of.getDescripcion() + of.getFechaInicio() + of.getFechaFinal() + of.getTipoOferta());
-            
-            st.executeUpdate("INSERT INTO restandfood.oferta(titulo, descripcion, fecha_inicio,"
-                    + " fecha_final, tipo_oferta) "
-                    + "VALUES ('" + of.getTitulo() + "', '" + of.getDescripcion() + "', " 
-                    + of.getFechaInicio() + ", "  + of.getFechaFinal() + ", '"  + of.getTipoOferta() + "')");
+            PreparedStatement ps = conexion.prepareStatement(
+                    "INSERT INTO restandfood.oferta(titulo, descripcion, fecha_inicio,"
+                    + " fecha_final, tipo_oferta) VALUES(?,?,?,?,?)");
 
+            ps.setString(1, of.getTitulo());
+            ps.setString(2, of.getDescripcion());
+            ps.setString(3, of.getFechaInicio());
+            ps.setString(4, of.getFechaFinal());
+            ps.setString(5, of.getTipoOferta());
+
+            ps.executeUpdate();
             conexion.close();
         } catch (SQLException ex) {
             throw new OfertaException("Error al insertar:" + ex.getLocalizedMessage());
@@ -102,13 +110,16 @@ public class SwingControllerImpl implements SwingController {
 
             Connection conexion = getConnection();
 
-            Statement st = conexion.createStatement();
+            PreparedStatement ps = conexion.prepareStatement(
+                    "UPDATE restandfood.oferta SET titulo = ?, descripcion = ?, "
+                    + "fecha_inicio = ?, fecha_final = ?, tipo_oferta = ? WHERE id_oferta = ?");
 
-            st.executeUpdate("UPDATE restandfood.oferta SET titulo = " + of.getTitulo()
-                    + "descripcion = " + of.getDescripcion()
-                    + "fecha_inicio = " + of.getFechaInicio()
-                    + "fecha_final = " + of.getFechaFinal()
-                    + "tipo_oferta = " + of.getTipoOferta());
+            ps.setString(1, of.getTitulo());
+            ps.setString(2, of.getDescripcion());
+            ps.setString(3, of.getFechaInicio());
+            ps.setString(4, of.getFechaFinal());
+            ps.setString(5, of.getTipoOferta());
+            //ps.setInt(6, );
 
             return null;
         } catch (SQLException ex) {
@@ -119,8 +130,64 @@ public class SwingControllerImpl implements SwingController {
     }
 
     @Override
-    public Integer loginEmpresa(String email, String contraseña) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Integer loginEmpresa(String email, String contraseña) throws OfertaException {
+
+        try {
+            Connection conexion = getConnection();
+
+            PreparedStatement ps = conexion.prepareStatement(
+                    "SELECT id_empresa FROM restandfood.empresa WHERE correo = ? AND contraseña = ?");
+
+            ps.setString(1, email);
+            ps.setString(2, contraseña);
+
+            ResultSet rs = ps.executeQuery();
+
+            rs.next();
+
+            Integer id_empresa = rs.getInt(1);
+
+            return id_empresa;
+
+        } catch (SQLException ex) {
+            throw new OfertaException("Error al logearse. Razon: " + ex.getSQLState() + ex.getLocalizedMessage());
+        }
+    }
+
+    private static List<Restaurante> restaurantes;
+
+    @Override
+    public List<Restaurante> listRestaurante(Integer id_empresa) throws RestauranteException {
+        if (restaurantes == null) {
+
+            try {
+                Connection conexion = getConnection();
+
+                PreparedStatement ps = conexion.prepareStatement(
+                        "SELECT direccion, nombre, codigo_postal, ciudad, id_empresa "
+                                + "FROM restandfood.restaurante WHERE id_empresa = ?");
+
+                ps.setInt(1, id_empresa);
+
+                ResultSet rs = ps.executeQuery();
+            
+                while (rs.next()) {
+                    String direccion = rs.getString("direccion");
+                    String nombre = rs.getString("nombre");
+                    Integer cod_postal = rs.getInt("codigo_postal");
+                    String ciudad = rs.getString("ciudad");
+                    Integer idEmpresa = rs.getInt("id_empresa");
+                    Restaurante r = new Restaurante(direccion, nombre, cod_postal, ciudad, idEmpresa);
+                    
+                    restaurantes.add(r);
+                }
+
+                
+            } catch (SQLException ex) {
+                throw new RestauranteException("Error al recoger los restaurantes. Razon: " + ex.getSQLState() + ex.getLocalizedMessage());
+            }
+        }
+        return restaurantes;
     }
 
 }
