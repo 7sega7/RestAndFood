@@ -8,7 +8,7 @@ import modelo.excepctions.RestauranteException;
 
 public interface SwingController {
 
-    public abstract List<Oferta> listarOfertas() throws OfertaException;
+    public abstract List<Oferta> listarOfertas(Integer id_empresa) throws OfertaException;
 
     public abstract void insertarOferta(Oferta of, String[] restNombres) throws OfertaException;
 

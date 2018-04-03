@@ -24,7 +24,7 @@ public class SwingControllerImpl implements SwingController {
     }
 
     @Override
-    public List<Oferta> listarOfertas() throws OfertaException {
+    public List<Oferta> listarOfertas(Integer id_empresa) throws OfertaException {
 
         try {
 
@@ -37,7 +37,7 @@ public class SwingControllerImpl implements SwingController {
                     + "INNER JOIN restandfood.oferta_restaurante AS ofr "
                     + "ON of.id_oferta = ofr.id_oferta INNER JOIN "
                     + "restandfood.restaurante AS res ON res.id_restaurante = ofr.id_restaurante "
-                    + "WHERE res.id_empresa = 1");
+                    + "WHERE res.id_empresa = " + id_empresa);
 
             List<Oferta> listaOfertas = new ArrayList<>();
 
