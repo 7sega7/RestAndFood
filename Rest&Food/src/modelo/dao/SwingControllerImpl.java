@@ -29,11 +29,15 @@ public class SwingControllerImpl implements SwingController {
         try {
 
             Connection conexion = getConnection();
-
-            PreparedStatement ps = conexion.prepareStatement("SELECT titulo, descripcion, fecha_inicio"
-                    + " fecha_final, tipo_oferta FROM restandfood.oferta WHERE ");
-
-            ResultSet rs = ps.executeQuery();
+            
+            Statement st = conexion.createStatement();
+            
+            ResultSet rs = st.executeQuery("SELECT DISTINCT of.titulo, of.descripcion, of.fecha_inicio"
+                    + " of.fecha_final, of.tipo_oferta FROM restandfood.oferta AS of "
+                    + "INNER JOIN restandfood.oferta_restaurante AS ofr "
+                    + "ON of.id_oferta = ofr.id_oferta INNER JOIN "
+                    + "restandfood.restaurante AS res ON res.id_restaurante = ofr.id_restaurante "
+                    + "WHERE res.id_empresa = 1");
 
             List<Oferta> listaOfertas = new ArrayList<>();
 
@@ -59,7 +63,7 @@ public class SwingControllerImpl implements SwingController {
     }
 
     @Override
-    public void insertarOferta(Oferta of) throws OfertaException {
+    public void insertarOferta(Oferta of, String[] restNombres) throws OfertaException {
 
         try {
             Connection conexion = getConnection();
@@ -75,7 +79,35 @@ public class SwingControllerImpl implements SwingController {
             ps.setString(5, of.getTipoOferta());
 
             ps.executeUpdate();
+
+            Statement st = conexion.createStatement();
+
+            ResultSet rs = st.executeQuery("SELECT id_oferta FROM restandfood.oferta "
+                    + "WHERE titulo = '" + of.getTitulo() + "'");
+            
+            rs.next();
+            Integer idOferta = rs.getInt(1);
+            
+            ps = conexion.prepareStatement("SELECT id_restaurante "
+                    + "FROM restandfood.restaurante WHERE nombre = ?");
+            
+            for (Integer i = 0; i < restNombres.length; i++) {
+                ps.setString(1, restNombres[i]);
+                rs = ps.executeQuery();
+            }
+            
+            ps = conexion.prepareStatement("INSERT INTO "
+                    + "restandfood.oferta_restaurante(id_oferta, id_restaurante) "
+                    + "VALUES(?,?)");
+            
+            while(rs.next()){
+                ps.setInt(1, idOferta);
+                ps.setInt(2, rs.getInt(1));
+                ps.executeUpdate();
+            }
+            
             conexion.close();
+            
         } catch (SQLException ex) {
             throw new OfertaException("Error al insertar:" + ex.getLocalizedMessage());
         }
@@ -154,35 +186,36 @@ public class SwingControllerImpl implements SwingController {
         }
     }
 
-    private static List<Restaurante> restaurantes;
+    private static List<Restaurante> restaurantes = new ArrayList<>();
 
     @Override
     public List<Restaurante> listRestaurante(Integer id_empresa) throws RestauranteException {
-        if (restaurantes == null) {
+        if (restaurantes.isEmpty()) {
 
             try {
                 Connection conexion = getConnection();
 
                 PreparedStatement ps = conexion.prepareStatement(
-                        "SELECT direccion, nombre, codigo_postal, ciudad, id_empresa "
-                                + "FROM restandfood.restaurante WHERE id_empresa = ?");
+                        "SELECT direccion, nombre, codigo_postal, ciudad "
+                        + "FROM restandfood.restaurante WHERE id_empresa = ?");
 
                 ps.setInt(1, id_empresa);
 
                 ResultSet rs = ps.executeQuery();
-            
+
                 while (rs.next()) {
-                    String direccion = rs.getString("direccion");
-                    String nombre = rs.getString("nombre");
-                    Integer cod_postal = rs.getInt("codigo_postal");
-                    String ciudad = rs.getString("ciudad");
-                    Integer idEmpresa = rs.getInt("id_empresa");
+                    String direccion = rs.getString(1);
+                    String nombre = rs.getString(2);
+                    Integer cod_postal = rs.getInt(3);
+                    String ciudad = rs.getString(4);
+                    Integer idEmpresa = id_empresa;
+
                     Restaurante r = new Restaurante(direccion, nombre, cod_postal, ciudad, idEmpresa);
-                    
+
                     restaurantes.add(r);
                 }
 
-                
+                conexion.close();
             } catch (SQLException ex) {
                 throw new RestauranteException("Error al recoger los restaurantes. Razon: " + ex.getSQLState() + ex.getLocalizedMessage());
             }

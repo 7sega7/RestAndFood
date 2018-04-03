@@ -5,18 +5,17 @@ import com.toedter.calendar.JDateChooser;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -40,14 +39,19 @@ public class AñadirFrame {
         JLabel restaurantesLbl = new JLabel("ELIJA LOS RESTAURANTES");
 
         JTextField titleTxt = new JTextField();
+        titleTxt.setToolTipText("Titulo de la oferta");
         JTextField descTxt = new JTextField();
+        descTxt.setToolTipText("Descripcion de la oferta");
         JDateChooser fechaIni = new JDateChooser();
         JDateChooser fechaFin = new JDateChooser();
         JTextField tipoDesTxt = new JTextField();
-        DefaultComboBoxModel<Restaurante> modeloCombo = new DefaultComboBoxModel<>();
+        tipoDesTxt.setToolTipText("Tipo de descuento");
+        DefaultComboBoxModel<String> restaurantesCboxModel = new DefaultComboBoxModel<>();
         JButton añadirResBtn = new JButton("AÑADIR OFERTA AL RESTAURANTE");
-        JComboBox restaurantesCbox = new JComboBox();
-        JList restList = new JList();
+        JButton quitarResBtn = new JButton("QUITAR OFERTA DEL RESTAURANTE");
+        JComboBox<String> restaurantesCbox = new JComboBox();
+        DefaultListModel<String> restListModel = new DefaultListModel<>();
+        JList<String> restList = new JList();
 
         JButton aceptarBtn = new JButton("CREAR NUEVA OFERTA");
 
@@ -55,13 +59,15 @@ public class AñadirFrame {
             List<Restaurante> restaurantesList = controller.listRestaurante(id_empresa);
 
             for (Restaurante res : restaurantesList) {
-                modeloCombo.addElement(res);
+                restaurantesCboxModel.addElement(res.getNombre());
             }
+
+            restaurantesCbox.setModel(restaurantesCboxModel);
         } catch (RestauranteException ex) {
             System.out.println(ex.getLocalizedMessage());
         }
 
-        JPanel panelTxt = new JPanel(new GridLayout(5, 0, 5, 5));
+        JPanel panelTxt = new JPanel(new GridLayout(8, 0, 5, 5));
         panelTxt.add(titleLbl);
         panelTxt.add(titleTxt);
         panelTxt.add(descLbl);
@@ -72,6 +78,11 @@ public class AñadirFrame {
         panelTxt.add(fechaFin);
         panelTxt.add(tipoDesLbl);
         panelTxt.add(tipoDesTxt);
+        panelTxt.add(restaurantesLbl);
+        panelTxt.add(restaurantesCbox);
+        panelTxt.add(añadirResBtn);
+        panelTxt.add(quitarResBtn);
+        panelTxt.add(restList);
 
         JPanel mainPanel = new JPanel(new BorderLayout(5, 5));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -79,35 +90,57 @@ public class AñadirFrame {
         mainPanel.add(panelTxt, BorderLayout.CENTER);
         mainPanel.add(aceptarBtn, BorderLayout.SOUTH);
 
-        JFrame anadirFrame = Ventana.crear("AÑADA NUEVAS OFERTAS", 400, 250, false);
+        JFrame anadirFrame = Ventana.crear("AÑADA NUEVAS OFERTAS", 425, 350, false);
         anadirFrame.setContentPane(mainPanel);
         anadirFrame.setLocationRelativeTo(null);
         anadirFrame.setVisible(true);
         anadirFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 
         aceptarBtn.addActionListener(e -> {
-            try {
 
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd");
+            if (restList.getModel().getSize() == 0) {
+                JOptionPane.showMessageDialog(null,
+                        "TIENES QUE AÑADIR ALGUN RESTAURANTE A LA OFERTA", "ERROR", JOptionPane.WARNING_MESSAGE);
+            } else {
 
-                Date d = fechaIni.getDate();
+                try {
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                    SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd");
+                    Date d = fechaIni.getDate();
+                    String dateIni = dateFormat.format(d);
+                    Date r = fechaFin.getDate();
+                    String dateFin = dateFormat.format(r);
+                    
+                    Oferta of = new Oferta(titleTxt.getText(), descTxt.getText(),
+                            dateIni, dateFin, tipoDesTxt.getText());
 
-                String dateIni = dateFormat.format(d);
+                    String[] restNombre = new String[restListModel.getSize()];
 
-                Date r = fechaFin.getDate();
-
-                String dateFin = dateFormat.format(r);
-
-                Oferta of = new Oferta(titleTxt.getText(), descTxt.getText(),
-                        dateIni, dateFin, tipoDesTxt.getText());
-
-                controller.insertarOferta(of);
-
-                anadirFrame.setVisible(false);
-            } catch (OfertaException ex) {
-                System.out.println(ex.getMessage());
+                    for (Integer i = 0; i < restListModel.getSize(); i++) {
+                        restNombre[i] = restListModel.getElementAt(i);
+                        System.out.println(restListModel.getElementAt(i));
+                    }
+                    controller.insertarOferta(of, restNombre);
+                    
+                    anadirFrame.setVisible(false);
+                } catch (OfertaException ex) {
+                    System.out.println(ex.getLocalizedMessage());
+                }
             }
+
+        });
+
+        añadirResBtn.addActionListener(e -> {
+            restListModel.addElement((String) restaurantesCbox.getSelectedItem());
+            restList.setModel(restListModel);
+            restaurantesCbox.removeItem(restaurantesCbox.getSelectedItem());
+        });
+
+        quitarResBtn.addActionListener(e -> {
+            restaurantesCboxModel.addElement(restList.getSelectedValue());
+            restListModel.removeElement(restList.getSelectedValue());
+            restList.setModel(restListModel);
+            restaurantesCbox.setModel(restaurantesCboxModel);
         });
 
         return anadirFrame;
