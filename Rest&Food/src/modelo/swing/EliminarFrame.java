@@ -6,6 +6,8 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.ScrollPane;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -49,6 +51,10 @@ public class EliminarFrame {
         
         DefaultListModel<Oferta> modeloLista = new DefaultListModel<>();
         JList<Oferta> lista = new JList<>(modeloLista);
+        
+        
+       
+        
         // Añadir los elementos a la lista
         // for (Oferta of : lista) {
         // modeloLista.addElement(of);
@@ -62,7 +68,7 @@ public class EliminarFrame {
         
         buttonDel.addActionListener(e -> { 
         
-           
+                
                 
                 SwingController controller = new SwingControllerImpl();
                 
@@ -70,16 +76,22 @@ public class EliminarFrame {
                 JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                 // yes option
                 
-                /*
-                buttonDel.addActionListener(e -> {
-                    
-                  SwingController controller = new SwingControllerImpl();
+                
+                buttonDel.addActionListener(del -> {
+             
                   
+                    try {
+                        String title = "";
+                        controller.eliminarOferta(title);
+                    } catch (OfertaException ex) {
+                        Logger.getLogger(EliminarFrame.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                   
                   
                     
                 });
                 
-                */
+                
             
                 } else {
                 // no option
