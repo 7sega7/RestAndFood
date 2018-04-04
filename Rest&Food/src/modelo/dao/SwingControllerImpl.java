@@ -8,8 +8,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import modelo.entidades.Oferta;
 import modelo.entidades.Restaurante;
 import modelo.excepctions.OfertaException;
@@ -87,29 +85,32 @@ public class SwingControllerImpl implements SwingController {
             
             rs.next();
             Integer idOferta = rs.getInt(1);
-            
             ps = conexion.prepareStatement("SELECT id_restaurante "
                     + "FROM restandfood.restaurante WHERE nombre = ?");
+            
+            Integer [] id_restaurantes = new Integer[restNombres.length];
             
             for (Integer i = 0; i < restNombres.length; i++) {
                 ps.setString(1, restNombres[i]);
                 rs = ps.executeQuery();
+                rs.next();
+                id_restaurantes [i] = rs.getInt(1);
             }
             
             ps = conexion.prepareStatement("INSERT INTO "
                     + "restandfood.oferta_restaurante(id_oferta, id_restaurante) "
                     + "VALUES(?,?)");
             
-            while(rs.next()){
+            for(Integer i = 0; i < id_restaurantes.length; i++){
                 ps.setInt(1, idOferta);
-                ps.setInt(2, rs.getInt(1));
+                ps.setInt(2, id_restaurantes[i]);
                 ps.executeUpdate();
             }
             
             conexion.close();
             
         } catch (SQLException ex) {
-            throw new OfertaException("Error al insertar:" + ex.getLocalizedMessage());
+            ex.printStackTrace(System.out);
         }
 
     }
