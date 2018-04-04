@@ -9,8 +9,10 @@ import java.awt.ScrollPane;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -26,7 +28,7 @@ import modelo.excepctions.OfertaException;
 
 public class EliminarFrame {
     
-    public static JFrame eliminarFrame(){
+    public static JFrame eliminarFrame( SwingController controller){
         
         
         JFrame el = Ventana.crear("", 300, 350, false);
@@ -47,10 +49,20 @@ public class EliminarFrame {
         // Titulo secundario
         JLabel secundario = new JLabel("ELIJA LA OFERTA A ELIMINAR");
         
-        // Creacion de la Lista
+        // Creacion de la lista y su modelo.
         
         DefaultListModel<Oferta> modeloLista = new DefaultListModel<>();
         JList<Oferta> lista = new JList<>(modeloLista);
+        
+        // Creacion del JComboBox precargado.
+        DefaultComboBoxModel<String> comboxmodel = new DefaultComboBoxModel<>();
+        JComboBox<String> comboxeliminar = new JComboBox();
+        
+        
+        
+        
+        
+        
         
         
        
@@ -70,7 +82,7 @@ public class EliminarFrame {
         
                 
                 
-                SwingController controller = new SwingControllerImpl();
+              
                 
                 if(JOptionPane.showConfirmDialog(null, "¿Estás seguro?", "WARNING",
                 JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {

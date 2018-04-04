@@ -48,7 +48,7 @@ public class MainFrame {
         });
         
         eliminar.addActionListener(e -> {
-            EliminarFrame.eliminarFrame();
+            EliminarFrame.eliminarFrame(controller);
         });
         
         editar.addActionListener(e -> {
