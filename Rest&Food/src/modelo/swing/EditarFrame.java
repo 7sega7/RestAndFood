@@ -2,28 +2,51 @@ package modelo.swing;
 
 import com.curso.swing.Ventana;
 import java.awt.BorderLayout;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.table.AbstractTableModel;
+import modelo.dao.SwingController;
 import modelo.entidades.Oferta;
+import modelo.excepctions.OfertaException;
 
 public class EditarFrame {
 
-    public static JFrame editarFrame() {
+    public static JFrame editarFrame(Integer id_empresa, SwingController controller) {
 
         JLabel title = new JLabel("EDITE AQUI SUS OFERTAS", SwingConstants.CENTER);
         title.setSize(20, 20);
 
-        //OfertaTableModel datosOferta = new OfertaTableModel(ofertas);
         JTable ofertas = new JTable();
-        //ofertas.setModel(datosOferta);
+
+        try {
+            OfertaTableModel tableModel = new OfertaTableModel(controller.listarOfertas(id_empresa));
+
+            ofertas.setModel(tableModel);
+        } catch (OfertaException ex) {
+            ex.printStackTrace(System.out);
+        }
+        ofertas.setAutoCreateRowSorter(true);
+        ofertas.getTableHeader().setReorderingAllowed(false);
+        ofertas.getTableHeader().setResizingAllowed(false);
+        ofertas.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        //ofertas.getColumnModel().getColumn(5).setPreferredWidth(0);
+        ofertas.getColumnModel().getColumn(5).setMaxWidth(0);
+        ofertas.getColumnModel().getColumn(5).setMinWidth(0);
+        ofertas.getTableHeader().getColumnModel().getColumn(5).setMaxWidth(0);
+        ofertas.getTableHeader().getColumnModel().getColumn(5).setMinWidth(0);
 
         JButton editarBtn = new JButton("EDITAR");
 
@@ -31,13 +54,50 @@ public class EditarFrame {
         mainPanel.add(title, BorderLayout.NORTH);
         mainPanel.add(new JScrollPane(ofertas), BorderLayout.CENTER);
         mainPanel.add(editarBtn, BorderLayout.SOUTH);
-        
-        JFrame editarFrame = Ventana.crear("EDITAR FRAME", 250, 300, false);
+
+        JFrame editarFrame = Ventana.crear("EDITAR FRAME", 650, 225, false);
         editarFrame.setLocationRelativeTo(null);
         editarFrame.setContentPane(mainPanel);
         editarFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         editarFrame.setVisible(true);
-        
+
+        List<Integer> indiceFilasCambiadas = new ArrayList<>();
+
+        List<Oferta> ofertasACambiar = new ArrayList<>();
+
+        ofertas.getModel().addTableModelListener(ae -> {
+            System.out.println("Celula cambiada en: " + ae.getLastRow());
+            indiceFilasCambiadas.add(ae.getLastRow());
+        });
+
+        editarBtn.addActionListener(ae -> {
+
+            HashSet<Integer> indiceSinRepetidos = new HashSet<>(indiceFilasCambiadas);
+            indiceFilasCambiadas.clear();
+            indiceFilasCambiadas.addAll(indiceSinRepetidos);
+
+            for (Integer i = 0; i < indiceFilasCambiadas.size(); i++) {
+
+                Oferta of = new Oferta((String) ofertas.getModel().getValueAt(indiceFilasCambiadas.get(i), 0),
+                        (String) ofertas.getModel().getValueAt(indiceFilasCambiadas.get(i), 1),
+                        (String) ofertas.getModel().getValueAt(indiceFilasCambiadas.get(i), 2),
+                        (String) ofertas.getModel().getValueAt(indiceFilasCambiadas.get(i), 3),
+                        (String) ofertas.getModel().getValueAt(indiceFilasCambiadas.get(i), 4),
+                        (Integer) ofertas.getModel().getValueAt(indiceFilasCambiadas.get(i), 5));
+                ofertasACambiar.add(of);
+            }
+            
+            try {
+                controller.updateOferta(ofertasACambiar);
+            } catch (OfertaException ex) {
+                ex.printStackTrace(System.out);
+            }
+            
+            JOptionPane.showMessageDialog(null, "REGISTROS CAMBIADOS CORRECTAMENTE");
+            editarFrame.setVisible(false);
+            
+        });
+
         return editarFrame;
     }
 }
@@ -57,7 +117,7 @@ class OfertaTableModel extends AbstractTableModel {
 
     @Override
     public int getColumnCount() {
-        return 5;
+        return 6;
     }
 
     @Override
@@ -71,6 +131,10 @@ class OfertaTableModel extends AbstractTableModel {
                 return filas.get(fila).getFechaInicio();
             case 3:
                 return filas.get(fila).getFechaFinal();
+            case 4:
+                return filas.get(fila).getTipoOferta();
+            case 5:
+                return filas.get(fila).getId_oferta();
             default:
                 return null;
         }
@@ -89,6 +153,8 @@ class OfertaTableModel extends AbstractTableModel {
                 return "FECHA DE CADUCIDAD";
             case 4:
                 return "TIPO DE OFERTA";
+            case 5:
+                return "ID_OFERTA";
             default:
                 return null;
         }
@@ -102,14 +168,46 @@ class OfertaTableModel extends AbstractTableModel {
             case 1:
                 return String.class;
             case 2:
-                return Date.class;
+                return String.class;
             case 3:
-                return Date.class;
+                return String.class;
             case 4:
                 return String.class;
+            case 5:
+                return Integer.class;
             default:
                 return null;
         }
+    }
+
+    @Override
+    public boolean isCellEditable(int fila, int columna) {
+        return true;
+    }
+
+    @Override
+    public void setValueAt(Object value, int fila, int columna) {
+        Oferta of = (Oferta) filas.get(fila);
+
+        switch (columna) {
+            case 0:
+                of.setTitulo(value.toString());
+                break;
+            case 1:
+                of.setDescripcion(value.toString());
+                break;
+            case 2:
+                of.setFechaInicio(value.toString());
+                break;
+            case 3:
+                of.setFechaFinal(value.toString());
+                break;
+            case 4:
+                of.setTipoOferta(value.toString());
+                break;
+        }
+        fireTableCellUpdated(fila, columna);
+
     }
 
 }

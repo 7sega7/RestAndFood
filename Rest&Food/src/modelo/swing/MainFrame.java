@@ -52,7 +52,7 @@ public class MainFrame {
         });
         
         editar.addActionListener(e -> {
-            EditarFrame.editarFrame();
+            EditarFrame.editarFrame(id_empresa, controller);
         });
         
         newRes.addActionListener(e -> {

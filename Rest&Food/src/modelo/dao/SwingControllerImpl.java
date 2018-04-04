@@ -23,21 +23,19 @@ public class SwingControllerImpl implements SwingController {
 
     @Override
     public List<Oferta> listarOfertas(Integer id_empresa) throws OfertaException {
-
+        List<Oferta> listaOfertas = new ArrayList<>();
         try {
 
             Connection conexion = getConnection();
-            
+
             Statement st = conexion.createStatement();
-            
-            ResultSet rs = st.executeQuery("SELECT DISTINCT of.titulo, of.descripcion, of.fecha_inicio"
-                    + " of.fecha_final, of.tipo_oferta FROM restandfood.oferta AS of "
+
+            ResultSet rs = st.executeQuery("SELECT DISTINCT of.titulo, of.descripcion, of.fecha_inicio,"
+                    + " of.fecha_final, of.tipo_oferta, of.id_oferta FROM restandfood.oferta AS of "
                     + "INNER JOIN restandfood.oferta_restaurante AS ofr "
                     + "ON of.id_oferta = ofr.id_oferta INNER JOIN "
                     + "restandfood.restaurante AS res ON res.id_restaurante = ofr.id_restaurante "
                     + "WHERE res.id_empresa = " + id_empresa);
-
-            List<Oferta> listaOfertas = new ArrayList<>();
 
             while (rs.next()) {
                 String titulo = rs.getString("titulo");
@@ -45,17 +43,19 @@ public class SwingControllerImpl implements SwingController {
                 String fecha_inicio = rs.getString("fecha_inicio");
                 String fecha_final = rs.getString("fecha_final");
                 String tipo_oferta = rs.getString("tipo_oferta");
+                Integer id_oferta = rs.getInt("id_oferta");
 
                 Oferta of = new Oferta(titulo, descripcion, fecha_inicio,
-                        fecha_final, tipo_oferta);
+                        fecha_final, tipo_oferta, id_oferta);
 
                 listaOfertas.add(of);
             }
-            conexion.close();
-            return listaOfertas;
 
+            conexion.close();
+
+            return listaOfertas;
         } catch (SQLException ex) {
-            throw new OfertaException("Error:" + ex.getStackTrace());
+            throw new OfertaException("Error:" + ex.getMessage());
         }
 
     }
@@ -82,33 +82,33 @@ public class SwingControllerImpl implements SwingController {
 
             ResultSet rs = st.executeQuery("SELECT id_oferta FROM restandfood.oferta "
                     + "WHERE titulo = '" + of.getTitulo() + "'");
-            
+
             rs.next();
             Integer idOferta = rs.getInt(1);
             ps = conexion.prepareStatement("SELECT id_restaurante "
                     + "FROM restandfood.restaurante WHERE nombre = ?");
-            
-            Integer [] id_restaurantes = new Integer[restNombres.length];
-            
+
+            Integer[] id_restaurantes = new Integer[restNombres.length];
+
             for (Integer i = 0; i < restNombres.length; i++) {
                 ps.setString(1, restNombres[i]);
                 rs = ps.executeQuery();
                 rs.next();
-                id_restaurantes [i] = rs.getInt(1);
+                id_restaurantes[i] = rs.getInt(1);
             }
-            
+
             ps = conexion.prepareStatement("INSERT INTO "
                     + "restandfood.oferta_restaurante(id_oferta, id_restaurante) "
                     + "VALUES(?,?)");
-            
-            for(Integer i = 0; i < id_restaurantes.length; i++){
+
+            for (Integer i = 0; i < id_restaurantes.length; i++) {
                 ps.setInt(1, idOferta);
                 ps.setInt(2, id_restaurantes[i]);
                 ps.executeUpdate();
             }
-            
+
             conexion.close();
-            
+
         } catch (SQLException ex) {
             ex.printStackTrace(System.out);
         }
@@ -137,7 +137,7 @@ public class SwingControllerImpl implements SwingController {
     }
 
     @Override
-    public List<Oferta> updateOferta(Oferta of) throws OfertaException {
+    public List<Oferta> updateOferta(List<Oferta> of) throws OfertaException {
 
         try {
 
@@ -147,12 +147,17 @@ public class SwingControllerImpl implements SwingController {
                     "UPDATE restandfood.oferta SET titulo = ?, descripcion = ?, "
                     + "fecha_inicio = ?, fecha_final = ?, tipo_oferta = ? WHERE id_oferta = ?");
 
-            ps.setString(1, of.getTitulo());
-            ps.setString(2, of.getDescripcion());
-            ps.setString(3, of.getFechaInicio());
-            ps.setString(4, of.getFechaFinal());
-            ps.setString(5, of.getTipoOferta());
-            //ps.setInt(6, );
+            for (Integer i = 0; i < of.size(); i++) {
+
+                ps.setString(1, of.get(i).getTitulo());
+                ps.setString(2, of.get(i).getDescripcion());
+                ps.setString(3, of.get(i).getFechaInicio());
+                ps.setString(4, of.get(i).getFechaFinal());
+                ps.setString(5, of.get(i).getTipoOferta());
+                ps.setInt(6, of.get(i).getId_oferta());
+
+                ps.executeUpdate();
+            }
 
             return null;
         } catch (SQLException ex) {
@@ -191,37 +196,36 @@ public class SwingControllerImpl implements SwingController {
 
     @Override
     public List<Restaurante> listRestaurante(Integer id_empresa) throws RestauranteException {
-        if (restaurantes.isEmpty()) {
+        try {
+            Connection conexion = getConnection();
 
-            try {
-                Connection conexion = getConnection();
+            PreparedStatement ps = conexion.prepareStatement(
+                    "SELECT direccion, nombre, codigo_postal, ciudad "
+                    + "FROM restandfood.restaurante WHERE id_empresa = ?");
 
-                PreparedStatement ps = conexion.prepareStatement(
-                        "SELECT direccion, nombre, codigo_postal, ciudad "
-                        + "FROM restandfood.restaurante WHERE id_empresa = ?");
+            ps.setInt(1, id_empresa);
 
-                ps.setInt(1, id_empresa);
+            ResultSet rs = ps.executeQuery();
 
-                ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                String direccion = rs.getString(1);
+                String nombre = rs.getString(2);
+                Integer cod_postal = rs.getInt(3);
+                String ciudad = rs.getString(4);
+                Integer idEmpresa = id_empresa;
 
-                while (rs.next()) {
-                    String direccion = rs.getString(1);
-                    String nombre = rs.getString(2);
-                    Integer cod_postal = rs.getInt(3);
-                    String ciudad = rs.getString(4);
-                    Integer idEmpresa = id_empresa;
+                Restaurante r = new Restaurante(direccion, nombre, cod_postal, ciudad, idEmpresa);
 
-                    Restaurante r = new Restaurante(direccion, nombre, cod_postal, ciudad, idEmpresa);
-
-                    restaurantes.add(r);
-                }
-
-                conexion.close();
-            } catch (SQLException ex) {
-                throw new RestauranteException("Error al recoger los restaurantes. Razon: " + ex.getSQLState() + ex.getLocalizedMessage());
+                restaurantes.add(r);
             }
+
+            conexion.close();
+
+            return restaurantes;
+        } catch (SQLException ex) {
+            throw new RestauranteException("Error al recoger los restaurantes. Razon: " + ex.getSQLState() + ex.getLocalizedMessage());
         }
-        return restaurantes;
+
     }
 
 }

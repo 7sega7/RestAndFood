@@ -2,11 +2,12 @@ package modelo.entidades;
 
 public class Oferta {
 
-    private final String titulo;
-    private final String descripcion;
-    private final String fechaInicio;
-    private final String fechaFinal;
-    private final String tipoOferta;
+    private String titulo;
+    private String descripcion;
+    private String fechaInicio;
+    private String fechaFinal;
+    private String tipoOferta;
+    private Integer id_oferta;
 
     public Oferta(String titulo, String descripcion, String fechaInicio,
             String fechaFinal, String tipoOferta) {
@@ -18,6 +19,19 @@ public class Oferta {
         this.tipoOferta = tipoOferta;
     }
 
+    public Oferta(String titulo, String descripcion, String fechaInicio, String fechaFinal, String tipoOferta, Integer id_oferta) {
+        this.titulo = titulo;
+        this.descripcion = descripcion;
+        this.fechaInicio = fechaInicio;
+        this.fechaFinal = fechaFinal;
+        this.tipoOferta = tipoOferta;
+        this.id_oferta = id_oferta;
+    }
+
+    public Integer getId_oferta() {
+        return id_oferta;
+    }
+ 
     public String getTitulo() {
         return titulo;
     }
@@ -36,6 +50,26 @@ public class Oferta {
 
     public String getTipoOferta() {
         return tipoOferta;
+    }
+
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public void setFechaInicio(String fechaInicio) {
+        this.fechaInicio = fechaInicio;
+    }
+
+    public void setFechaFinal(String fechaFinal) {
+        this.fechaFinal = fechaFinal;
+    }
+
+    public void setTipoOferta(String tipoOferta) {
+        this.tipoOferta = tipoOferta;
     }
 
 }
