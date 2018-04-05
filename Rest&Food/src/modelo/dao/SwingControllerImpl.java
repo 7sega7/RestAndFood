@@ -8,6 +8,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import modelo.entidades.Oferta;
 import modelo.entidades.Restaurante;
 import modelo.excepctions.OfertaException;
@@ -228,4 +230,70 @@ public class SwingControllerImpl implements SwingController {
 
     }
 
+    
+    
+    @Override
+    public void insertarRestaurante(Restaurante res, String[] oftitulo) throws RestauranteException {
+        
+        try {
+            
+            Connection conexion = getConnection();
+            
+            PreparedStatement ps = conexion.prepareStatement(
+                    "INSERT INTO restandfood.restaurante(direccion, nombre, codigo_postal, ciudad"
+                    + "  VALUES(?,?,?,?)");
+            
+            ps.setString(1, res.getDireccion());
+            ps.setString(2, res.getNombre());
+            ps.setInt(3, res.getCod_postal());
+            ps.setString(4, res.getCiudad());
+            
+            ps.executeUpdate();
+
+            Statement st = conexion.createStatement();
+            
+            ResultSet rs = st.executeQuery("SELECT id_restaurante FROM restandfood.restaurante "
+                    + "WHERE nombre = '" + res.getNombre()+ "'");
+            
+            rs.next();
+            
+            Integer id_restaurantes = rs.getInt(1);
+            ps = conexion.prepareStatement("SELECT id_oferta "
+                    + "FROM restandfood.oferta WHERE titulo = ?");
+
+            Integer[] id_Ofertas = new Integer[oftitulo.length];
+
+            for (Integer i = 0; i < oftitulo.length; i++) {
+                ps.setString(1, oftitulo[i]);
+                rs = ps.executeQuery();
+                rs.next();
+                id_Ofertas[i] = rs.getInt(1);
+            }
+
+            ps = conexion.prepareStatement("INSERT INTO "
+                    + "restandfood.oferta_restaurante(id_oferta, id_restaurante) "
+                    + "VALUES(?,?)");
+
+            /*
+            for (Integer i = 0; i < id_Ofertas.length; i++) {
+                ps.setInt(1, id_Ofertas);
+                ps.setInt(2, id_restaurantes[i]);
+                ps.executeUpdate();
+            }
+*/
+            conexion.close();
+            
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(SwingControllerImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        
+        
+        
+    }
+
 }
+
+
+            

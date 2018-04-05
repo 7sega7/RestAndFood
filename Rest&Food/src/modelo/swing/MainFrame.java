@@ -48,7 +48,7 @@ public class MainFrame {
         });
         
         eliminar.addActionListener(e -> {
-            EliminarFrame.eliminarFrame(controller);
+            EliminarFrame.eliminarFrame(id_empresa, controller);
         });
         
         editar.addActionListener(e -> {

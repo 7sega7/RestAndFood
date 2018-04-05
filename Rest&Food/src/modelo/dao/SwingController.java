@@ -19,4 +19,6 @@ public interface SwingController {
     public abstract Integer loginEmpresa(String email, String contraseña) throws OfertaException;
     
     public abstract List<Restaurante> listRestaurante(Integer id_empresa) throws RestauranteException;
+    
+    public abstract void insertarRestaurante(Restaurante res, String[] oftitulo) throws RestauranteException;
 }

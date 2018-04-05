@@ -6,6 +6,7 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.ScrollPane;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
@@ -28,7 +29,7 @@ import modelo.excepctions.OfertaException;
 
 public class EliminarFrame {
     
-    public static JFrame eliminarFrame( SwingController controller){
+    public static JFrame eliminarFrame(Integer id_empresa, SwingController controller){
         
         
         JFrame el = Ventana.crear("", 300, 350, false);
@@ -51,39 +52,55 @@ public class EliminarFrame {
         
         // Creacion de la lista y su modelo.
         
-        DefaultListModel<Oferta> modeloLista = new DefaultListModel<>();
-        JList<Oferta> lista = new JList<>(modeloLista);
+        DefaultListModel<String> modeloLista = new DefaultListModel<>();
+        JList<String> lista = new JList<>(); // DUDA PONER DENTRO DEL PARENTESIS modeloLista ????
         
         // Creacion del JComboBox precargado.
         DefaultComboBoxModel<String> comboxmodel = new DefaultComboBoxModel<>();
         JComboBox<String> comboxeliminar = new JComboBox();
         
-        
-        
-        
-        
-        
-        
-        
-       
-        
-        // Añadir los elementos a la lista
-        // for (Oferta of : lista) {
-        // modeloLista.addElement(of);
-        
         // Creacion del boton
         JButton buttonDel = new JButton("Eliminar");
         
         
+        // Ahora precargamos el comboBox
+        try {
+            List<Oferta> ofertalist = controller.listarOfertas(id_empresa);
         
-        // Mensaje de advertencia de si quieres eliminar los datos seleccionado.
+            for (Oferta of : ofertalist) {
+                comboxmodel.addElement(of.getTitulo());
+            }
+            
+            comboxeliminar.setModel(comboxmodel);
+         
+        } catch (OfertaException ex) {
+            System.out.println(ex.getLocalizedMessage());
+        }
+        
+        
+        // Añadir elementos al panel secundario
+        panelse.add(secundario, BorderLayout.NORTH);
+        panelse.add(new JScrollPane(lista), BorderLayout.SOUTH);
+       
+        
+        // Añadir elementos al panel principal
+        panelp.add(principal, BorderLayout.NORTH);
+        panelp.add(panelse, BorderLayout.CENTER);
+        panelp.add(buttonDel, BorderLayout.SOUTH);
+        
+        
+         
+        // EVENTO DE ELIMINAR
         
         buttonDel.addActionListener(e -> { 
-        
+            
+            if (lista.getModel().getSize() == 0) {
                 
+                JOptionPane.showMessageDialog(null, "TIENES QUE SELECCIONAR UNA OFERTA", "AVISO", JOptionPane.WARNING_MESSAGE);
                 
-              
+            } else {
                 
+            
                 if(JOptionPane.showConfirmDialog(null, "¿Estás seguro?", "WARNING",
                 JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                 // yes option
@@ -91,13 +108,10 @@ public class EliminarFrame {
                 
                 buttonDel.addActionListener(del -> {
              
-                  
-                    try {
-                        String title = "";
-                        controller.eliminarOferta(title);
-                    } catch (OfertaException ex) {
-                        Logger.getLogger(EliminarFrame.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+                 comboxmodel.addElement(lista.getSelectedValue());
+                 modeloLista.removeElement(lista.getSelectedValue());
+                 lista.setModel(modeloLista);
+                 comboxeliminar.setModel(comboxmodel);
                    
                   
                     
@@ -109,53 +123,10 @@ public class EliminarFrame {
                 // no option
                    
                 }
+            }
          });
         
-        
-        
-        
-        
-        /*
-        
-        // Evento que confirma la eliminacion seleccionada.
-        
-        
-        
-        
-        buttonDel.addActionListener(e -> {
-        
-            try{
-            
-                SwingController controller = new SwingControllerImpl();
-                
-                
-            
-            
-        } catch (OfertaException ex) {
-            
-            System.out.println(ex.getMessage());
-        } 
-        
-        
-        
-        } );
-        
-        */
-        
-        
-       
-        
-        
-        
-        
-        // Añadir elementos al panel secundario
-        panelse.add(secundario, BorderLayout.NORTH);
-        panelse.add(new JScrollPane(lista), BorderLayout.SOUTH);
-        
-        // Añadir elementos al panel principal
-        panelp.add(principal, BorderLayout.NORTH);
-        panelp.add(panelse, BorderLayout.CENTER);
-        panelp.add(buttonDel, BorderLayout.SOUTH);
+    
         
         // Visibilizacion del panel
         el.setContentPane(panelp);

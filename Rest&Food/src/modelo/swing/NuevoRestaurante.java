@@ -31,7 +31,7 @@ public class NuevoRestaurante {
         
         JButton nuevores = new JButton("CREAR NUEVO RESTAURANTE");
         
-        JPanel paneltxt = new JPanel(new GridLayout(8, 0, 5, 5));
+        JPanel paneltxt = new JPanel(new GridLayout(4, 0, 3, 3));
         paneltxt.add(nombre);
         paneltxt.add(txtnombre);
         paneltxt.add(ciudad);
@@ -51,6 +51,10 @@ public class NuevoRestaurante {
         nuevorestaurante.setLocationRelativeTo(null);
         nuevorestaurante.setVisible(true);
         nuevorestaurante.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        
+        // EVENTO PARA INSERTAR NUEVOS RESTAURANTES.
+        
+        
         
         
         
