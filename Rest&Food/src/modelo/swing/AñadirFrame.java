@@ -17,8 +17,10 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import modelo.dao.SwingController;
 import modelo.entidades.Oferta;
 import modelo.entidades.Restaurante;
@@ -67,7 +69,7 @@ public class AñadirFrame {
             System.out.println(ex.getLocalizedMessage());
         }
 
-        JPanel panelTxt = new JPanel(new GridLayout(8, 0, 5, 5));
+        JPanel panelTxt = new JPanel(new GridLayout(8, 2, 5, 5));
         panelTxt.add(titleLbl);
         panelTxt.add(titleTxt);
         panelTxt.add(descLbl);
@@ -82,15 +84,18 @@ public class AñadirFrame {
         panelTxt.add(restaurantesCbox);
         panelTxt.add(añadirResBtn);
         panelTxt.add(quitarResBtn);
-        panelTxt.add(restList);
 
+        JPanel secondPanel = new JPanel(new BorderLayout(5, 5));
+        secondPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        secondPanel.add(header, BorderLayout.NORTH);
+        secondPanel.add(panelTxt, BorderLayout.CENTER);
+        
         JPanel mainPanel = new JPanel(new BorderLayout(5, 5));
-        mainPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        mainPanel.add(header, BorderLayout.NORTH);
-        mainPanel.add(panelTxt, BorderLayout.CENTER);
+        mainPanel.add(secondPanel, BorderLayout.NORTH);
+        mainPanel.add(restList, BorderLayout.CENTER);
         mainPanel.add(aceptarBtn, BorderLayout.SOUTH);
 
-        JFrame anadirFrame = Ventana.crear("AÑADA NUEVAS OFERTAS", 425, 350, false);
+        JFrame anadirFrame = Ventana.crear("AÑADA NUEVAS OFERTAS", 450, 380, false);
         anadirFrame.setContentPane(mainPanel);
         anadirFrame.setLocationRelativeTo(null);
         anadirFrame.setVisible(true);
@@ -110,7 +115,7 @@ public class AñadirFrame {
                     String dateIni = dateFormat.format(d);
                     Date r = fechaFin.getDate();
                     String dateFin = dateFormat.format(r);
-                    
+
                     Oferta of = new Oferta(titleTxt.getText(), descTxt.getText(),
                             dateIni, dateFin, tipoDesTxt.getText());
 
@@ -121,7 +126,7 @@ public class AñadirFrame {
                         System.out.println(restListModel.getElementAt(i));
                     }
                     controller.insertarOferta(of, restNombre);
-                    
+
                     anadirFrame.setVisible(false);
                 } catch (OfertaException ex) {
                     System.out.println(ex.getLocalizedMessage());
@@ -131,16 +136,30 @@ public class AñadirFrame {
         });
 
         añadirResBtn.addActionListener(e -> {
-            restListModel.addElement((String) restaurantesCbox.getSelectedItem());
-            restList.setModel(restListModel);
-            restaurantesCbox.removeItem(restaurantesCbox.getSelectedItem());
+
+            if (restaurantesCbox.getSelectedItem() != null) {
+                restListModel.addElement((String) restaurantesCbox.getSelectedItem());
+                restList.setModel(restListModel);
+                restaurantesCbox.removeItem(restaurantesCbox.getSelectedItem());
+            } else {
+                JOptionPane.showMessageDialog(null, "Tienes que seleccionar algun restaurante para poder añadirlo",
+                        "ERROR", JOptionPane.WARNING_MESSAGE);
+            }
         });
 
         quitarResBtn.addActionListener(e -> {
-            restaurantesCboxModel.addElement(restList.getSelectedValue());
-            restListModel.removeElement(restList.getSelectedValue());
-            restList.setModel(restListModel);
-            restaurantesCbox.setModel(restaurantesCboxModel);
+
+            if (restList.getSelectedIndex() < 0) {
+                JOptionPane.showMessageDialog(null, "Tienes que seleccionar algun restaurante para poder quitarlo",
+                        "ERROR", JOptionPane.WARNING_MESSAGE);
+            } else {
+                restaurantesCboxModel.addElement(restList.getSelectedValue());
+                restListModel.removeElement(restList.getSelectedValue());
+                restList.setModel(restListModel);
+                restaurantesCbox.setModel(restaurantesCboxModel);
+
+            }
+
         });
 
         return anadirFrame;

@@ -72,13 +72,14 @@ public class _main_ {
         accederBtn.addActionListener(e -> {
 
             try {
-                id_empresa = controller.loginEmpresa(emailEmpresaTxt.getText(),
-                        passEmpresaTxt.getText());
 
-                if (id_empresa != null) {
+                if (controller.loginEmpresa(emailEmpresaTxt.getText(), passEmpresaTxt.getText()) != 0) {
+                    id_empresa = controller.loginEmpresa(emailEmpresaTxt.getText(),
+                            passEmpresaTxt.getText());
+                    
                     MainFrame.mainFrame(id_empresa, controller);
                     empresaFrame.setVisible(false);
-                } else{
+                } else {
                     JOptionPane.showConfirmDialog(null, "CORREO O CONTRASEÑA INCORRECTOS", "ERROR", JOptionPane.ERROR_MESSAGE);
                 }
 

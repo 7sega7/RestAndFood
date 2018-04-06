@@ -66,7 +66,6 @@ public class EditarFrame {
         List<Oferta> ofertasACambiar = new ArrayList<>();
 
         ofertas.getModel().addTableModelListener(ae -> {
-            System.out.println("Celula cambiada en: " + ae.getLastRow());
             indiceFilasCambiadas.add(ae.getLastRow());
         });
 
