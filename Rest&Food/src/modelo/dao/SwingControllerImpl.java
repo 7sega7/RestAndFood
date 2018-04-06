@@ -139,7 +139,7 @@ public class SwingControllerImpl implements SwingController {
     }
 
     @Override
-    public List<Oferta> updateOferta(List<Oferta> of) throws OfertaException {
+    public void updateOferta(List<Oferta> of) throws OfertaException {
 
         try {
 
@@ -160,8 +160,7 @@ public class SwingControllerImpl implements SwingController {
 
                 ps.executeUpdate();
             }
-
-            return null;
+            conexion.close();
         } catch (SQLException ex) {
 
             throw new OfertaException("Error al actualizar.  Razon: " + ex.getMessage());
@@ -240,8 +239,8 @@ public class SwingControllerImpl implements SwingController {
             Connection conexion = getConnection();
             
             PreparedStatement ps = conexion.prepareStatement(
-                    "INSERT INTO restandfood.restaurante(direccion, nombre, codigo_postal, ciudad, id_empresa"
-                    + "  VALUES(?,?,?,?,?)");
+                    "INSERT INTO restandfood.restaurante(direccion, nombre, codigo_postal, ciudad, id_empresa)"
+                    + " VALUES(?,?,?,?,?)");
             
             ps.setString(1, res.getDireccion());
             ps.setString(2, res.getNombre());
@@ -251,7 +250,6 @@ public class SwingControllerImpl implements SwingController {
             
             ps.executeUpdate();
             conexion.close();
-            
             
         } catch (SQLException ex) {
            ex.printStackTrace(System.out); 
