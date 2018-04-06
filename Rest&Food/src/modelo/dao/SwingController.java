@@ -12,7 +12,7 @@ public interface SwingController {
 
     public abstract void insertarOferta(Oferta of, String[] restNombres) throws OfertaException;
 
-    public abstract void eliminarOferta(String title) throws OfertaException;
+    public abstract void eliminarOferta(Integer id_oferta) throws OfertaException;
 
     public abstract void updateOferta(List<Oferta> of) throws OfertaException;
     

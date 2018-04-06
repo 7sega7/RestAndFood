@@ -6,6 +6,7 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.ScrollPane;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,6 +21,7 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.SwingConstants;
 import modelo.dao.SwingController;
 import modelo.dao.SwingControllerImpl;
 import modelo.entidades.Oferta;
@@ -48,12 +50,12 @@ public class EliminarFrame {
         principal.setFont(new Font("Serif", Font.BOLD, 25));
         
         // Titulo secundario
-        JLabel secundario = new JLabel("ELIJA LA OFERTA A ELIMINAR");
+        JLabel secundario = new JLabel("ELIJA LA OFERTA A ELIMINAR", SwingConstants.CENTER);
         
         // Creacion de la lista y su modelo.
         
         DefaultListModel<String> modeloLista = new DefaultListModel<>();
-        JList<String> lista = new JList<>(); // DUDA PONER DENTRO DEL PARENTESIS modeloLista ????
+        JList<String> lista = new JList<>(); 
         
         // Creacion del JComboBox precargado.
         DefaultComboBoxModel<String> comboxmodel = new DefaultComboBoxModel<>();
@@ -64,14 +66,17 @@ public class EliminarFrame {
         
         
         // Ahora precargamos el comboBox
+        
+        List<Oferta> ofertalist = new ArrayList<>();
         try {
-            List<Oferta> ofertalist = controller.listarOfertas(id_empresa);
+             ofertalist = controller.listarOfertas(id_empresa);
         
             for (Oferta of : ofertalist) {
-                comboxmodel.addElement(of.getTitulo());
+                comboxmodel.addElement(of.getTitulo());   
             }
             
             comboxeliminar.setModel(comboxmodel);
+          
          
         } catch (OfertaException ex) {
             System.out.println(ex.getLocalizedMessage());
@@ -80,7 +85,7 @@ public class EliminarFrame {
         
         // Añadir elementos al panel secundario
         panelse.add(secundario, BorderLayout.NORTH);
-        panelse.add(new JScrollPane(lista), BorderLayout.SOUTH);
+        panelse.add(comboxeliminar, BorderLayout.CENTER);
        
         
         // Añadir elementos al panel principal
@@ -107,13 +112,21 @@ public class EliminarFrame {
                 
                 
                 buttonDel.addActionListener(del -> {
-             
-                 comboxmodel.addElement(lista.getSelectedValue());
-                 modeloLista.removeElement(lista.getSelectedValue());
-                 lista.setModel(modeloLista);
-                 comboxeliminar.setModel(comboxmodel);
+                 /*
+                    try {
+                        
+                        
+                    //    Integer id_oferta = ofertalist.get(comboxeliminar.getSelectedIndex()).getId_oferta();
+                        //  comboxmodel.addElement(lista.getSelectedValue());
+                        //  modeloLista.removeElement(lista.getSelectedValue());
+                        //  lista.setModel(modeloLista);
+                        //comboxeliminar.setModel(comboxmodel);
+                     //   controller.eliminarOferta(id_oferta);
+                    } catch (OfertaException ex) {
+                        System.out.println(ex.getLocalizedMessage());
+                    }
                    
-                  
+                 */ 
                     
                 });
                 

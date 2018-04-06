@@ -118,7 +118,7 @@ public class SwingControllerImpl implements SwingController {
     }
 
     @Override
-    public void eliminarOferta(String titulo) throws OfertaException {
+    public void eliminarOferta(Integer id_oferta) throws OfertaException {
 
         try {
 
@@ -127,7 +127,7 @@ public class SwingControllerImpl implements SwingController {
             Statement st = conexion.createStatement();
 
             st.executeUpdate("DELETE FROM restandfood.oferta "
-                    + "WHERE titulo =  " + titulo);
+                    + "WHERE id_oferta =  " + id_oferta);
 
             conexion.close();
 
