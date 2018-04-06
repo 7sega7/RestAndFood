@@ -86,13 +86,12 @@ public class AñadirFrame {
         panelTxt.add(quitarResBtn);
 
         JPanel secondPanel = new JPanel(new BorderLayout(5, 5));
-        secondPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         secondPanel.add(header, BorderLayout.NORTH);
         secondPanel.add(panelTxt, BorderLayout.CENTER);
         
         JPanel mainPanel = new JPanel(new BorderLayout(5, 5));
         mainPanel.add(secondPanel, BorderLayout.NORTH);
-        mainPanel.add(restList, BorderLayout.CENTER);
+        mainPanel.add(new JScrollPane(restList), BorderLayout.CENTER);
         mainPanel.add(aceptarBtn, BorderLayout.SOUTH);
 
         JFrame anadirFrame = Ventana.crear("AÑADA NUEVAS OFERTAS", 450, 380, false);
