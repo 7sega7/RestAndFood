@@ -20,5 +20,5 @@ public interface SwingController {
     
     public abstract List<Restaurante> listRestaurante(Integer id_empresa) throws RestauranteException;
     
-    public abstract void insertarRestaurante(Restaurante res, String[] oftitulo) throws RestauranteException;
+    public abstract void insertarRestaurante(Restaurante res) throws RestauranteException;
 }

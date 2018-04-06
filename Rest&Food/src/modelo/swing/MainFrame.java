@@ -56,7 +56,7 @@ public class MainFrame {
         });
         
         newRes.addActionListener(e -> {
-            NuevoRestaurante.añadirRestaurante();
+            NuevoRestaurante.añadirRestaurante(id_empresa, controller);
         });
         
         return mainFrame;
