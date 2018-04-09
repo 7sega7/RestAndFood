@@ -34,23 +34,26 @@ public class EliminarFrame {
     public static JFrame eliminarFrame(Integer id_empresa, SwingController controller){
         
         
-        JFrame el = Ventana.crear("", 300, 350, false);
+        JFrame el = Ventana.crear("ELIMINAR OFERTA", 450, 300, false);
         
         // Creación del panel principal --> titulo principal, panel secundario, boton
         JPanel panelp = new JPanel(new BorderLayout(5, 5));
-        panelp.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        
         
         // Creacion del panel secundario --> titulo secundario, lista.
         JPanel panelse = new JPanel(); 
-        panelse.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        
+        // Creacion del panel que contenga comboBox precargado y los botones de añadir y quitar
+        JPanel panelter = new JPanel();
+        
+        
                 
         // Titulos de la parte superior
-        JLabel principal = new JLabel("ELIMINAR OFERTA");
-        
-        principal.setFont(new Font("Serif", Font.BOLD, 25));
+        JLabel header = new JLabel("ELIMINAR OFERTA", SwingConstants.CENTER);
+        header.setFont(new Font("Serif", Font.BOLD, 20));
         
         // Titulo secundario
-        JLabel secundario = new JLabel("ELIJA LA OFERTA A ELIMINAR", SwingConstants.CENTER);
+        JLabel secundario = new JLabel("ELIJA LA OFERTA A ELIMINAR");
         
         // Creacion de la lista y su modelo.
         
@@ -64,6 +67,10 @@ public class EliminarFrame {
         // Creacion del boton
         JButton buttonDel = new JButton("Eliminar");
         
+        // Creación de los botones de aceptar y quitar del ScrollPane
+        
+        JButton botonadd = new JButton("AÑADIR");
+        JButton botonquit = new JButton("QUITAR");
         
         // Ahora precargamos el comboBox
         
@@ -84,24 +91,31 @@ public class EliminarFrame {
         
         
         // Añadir elementos al panel secundario
-        panelse.add(secundario, BorderLayout.NORTH);
-        panelse.add(comboxeliminar, BorderLayout.CENTER);
+        panelse.add(header, BorderLayout.NORTH);
+        panelse.add(panelter, BorderLayout.CENTER);
+        
+        // Añadir elementos al panel terciario
+        panelter.add(comboxeliminar);
+        panelter.add(botonadd);
+        panelter.add(botonquit);
        
         
         // Añadir elementos al panel principal
-        panelp.add(principal, BorderLayout.NORTH);
-        panelp.add(panelse, BorderLayout.CENTER);
+        
+        panelp.add(panelse, BorderLayout.NORTH);
+        panelp.add(new JScrollPane(lista), BorderLayout.CENTER);
         panelp.add(buttonDel, BorderLayout.SOUTH);
         
         
          
         // EVENTO DE ELIMINAR
         
+        Integer id_oferta;
         buttonDel.addActionListener(e -> { 
             
             if (lista.getModel().getSize() == 0) {
                 
-                JOptionPane.showMessageDialog(null, "TIENES QUE SELECCIONAR UNA OFERTA", "AVISO", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(null, "NO HAS SELECCIONADO UNA OFERTA", "AVISO", JOptionPane.WARNING_MESSAGE);
                 
             } else {
                 
@@ -110,27 +124,22 @@ public class EliminarFrame {
                 JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                 // yes option
                 
-                
-                buttonDel.addActionListener(del -> {
-                 /*
+                /*
                     try {
                         
                         
-                    //    Integer id_oferta = ofertalist.get(comboxeliminar.getSelectedIndex()).getId_oferta();
-                        //  comboxmodel.addElement(lista.getSelectedValue());
-                        //  modeloLista.removeElement(lista.getSelectedValue());
-                        //  lista.setModel(modeloLista);
-                        //comboxeliminar.setModel(comboxmodel);
-                     //   controller.eliminarOferta(id_oferta);
+                       id_oferta = ofertalist.get(comboxeliminar.getSelectedIndex()).getId_oferta();
+                       // id_oferta = ofertalist.get(comboxeliminar.getSelectedIndex()).getId_oferta();
+                        comboxmodel.addElement(lista.getSelectedValue());
+                        modeloLista.removeElement(lista.getSelectedValue());
+                        lista.setModel(modeloLista);
+                        comboxeliminar.setModel(comboxmodel);
+                        controller.eliminarOferta(id_oferta);
                     } catch (OfertaException ex) {
                         System.out.println(ex.getLocalizedMessage());
                     }
                    
-                 */ 
-                    
-                });
-                
-                
+                  */   
             
                 } else {
                 // no option
@@ -138,6 +147,35 @@ public class EliminarFrame {
                 }
             }
          });
+        
+        
+        botonadd.addActionListener(e -> {
+
+            if (comboxeliminar.getSelectedItem() != null) {
+                modeloLista.addElement((String) comboxeliminar.getSelectedItem());
+                lista.setModel(modeloLista);
+                comboxeliminar.removeItem(comboxeliminar.getSelectedItem());
+            } else {
+                JOptionPane.showMessageDialog(null, "Elige una oferta",
+                        "ERROR", JOptionPane.WARNING_MESSAGE);
+            }
+        });
+        
+        
+        botonquit.addActionListener(e -> {
+
+            if (lista.getSelectedIndex() < 0) {
+                JOptionPane.showMessageDialog(null, "Selecciona una oferta para quitarlo",
+                        "ERROR", JOptionPane.WARNING_MESSAGE);
+            } else {
+                comboxmodel.addElement(lista.getSelectedValue());
+                modeloLista.removeElement(lista.getSelectedValue());
+                lista.setModel(modeloLista);
+                comboxeliminar.setModel(comboxmodel);
+
+            }
+
+        });
         
     
         
